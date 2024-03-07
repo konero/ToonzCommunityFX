@@ -1,0 +1,6 @@
+<fxlayout>
+  <page name="Sobel Edge Detection">
+    <control>threshold</control>
+    <control>edgeColor</control>
+  </page>
+</fxlayout>

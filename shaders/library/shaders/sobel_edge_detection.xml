@@ -1,0 +1,51 @@
+<MainProgram>
+  <Name>
+    SHADER_sobel_edge_detection
+  </Name>
+  <ProgramFile>
+    "programs/sobel_edge_detection.frag"
+  </ProgramFile>
+</MainProgram>
+
+<InputPorts>
+  <InputPort>
+    "Source"
+  </InputPort>
+ 
+   <PortsProgram>
+    <Name>
+      SHADER_sobel_edge_detection_ports
+    </Name>
+    <ProgramFile>
+      "programs/sobel_edge_detection_ports.vert"
+    </ProgramFile>
+  </PortsProgram>
+</InputPorts>
+
+<HandledWorldTransforms>
+  isotropic
+</HandledWorldTransforms>
+
+<Parameters>
+  <Parameter>
+    float threshold
+    <Concept>
+      percent
+    </Concept>
+    <Default>
+      0.2
+    </Default>
+    <Range>
+      0.0 1.0
+    </Range>
+  </Parameter>
+  <Parameter>
+    rgba edgeColor
+    <Default>
+      255 0 0 255
+    </Default>
+    <Concept>
+      color
+    </Concept>
+  </Parameter>
+</Parameters>
