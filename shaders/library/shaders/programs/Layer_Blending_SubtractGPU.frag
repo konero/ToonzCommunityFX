@@ -15,7 +15,7 @@ vec3 depremultiply(vec4 color) {
 }
 
 vec3 layerBlendingAlgorithm(vec3 base, vec3 top) {
-    return max(base - top, 0.0); // Subtract blending
+    return max(base - top, 0.0); // Subtract blend mode
 }
 
 float calculateOutputAlpha(float baseAlpha, float topAlpha) {
@@ -27,17 +27,35 @@ vec3 compositeColors(vec3 baseRGB, vec3 topRGB, vec3 blendedRGB, float baseAlpha
     return baseRGB * baseAlpha * (1.0 - topAlpha) + mix(finalRGB, blendedRGB, baseAlpha) * topAlpha;
 }
 
+// Detects OpenToonz empty frame artifacts: black RGB with non-zero alpha
+// Returns true when content is effectively empty (RGB channels below threshold)
+bool isEffectivelyEmpty(vec4 color) {
+    float maxChannel = max(max(color.r, color.g), color.b);
+    return maxChannel < 0.001;
+}
+
 void main(void) {
     vec2 topTexPos = (outputToInput[0] * vec3(gl_FragCoord.xy, 1.0)).xy;
     vec2 baseTexPos = (outputToInput[1] * vec3(gl_FragCoord.xy, 1.0)).xy;
     vec4 topColor = texture2D(inputImage[0], topTexPos);
     vec4 baseColor = texture2D(inputImage[1], baseTexPos);
+    
+    bool topIsEmpty = isEffectivelyEmpty(topColor);
+    bool baseIsEmpty = isEffectivelyEmpty(baseColor);
+    
+    if (topIsEmpty && baseIsEmpty) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        return;
+    }
+    
+    vec4 effectiveTopColor = topIsEmpty ? vec4(0.0, 0.0, 0.0, 0.0) : topColor;
+    vec4 effectiveBaseColor = baseIsEmpty ? vec4(0.0, 0.0, 0.0, 0.0) : baseColor;
 
-    vec3 topRGB = depremultiply(topColor);
-    vec3 baseRGB = depremultiply(baseColor);
+    vec3 topRGB = depremultiply(effectiveTopColor);
+    vec3 baseRGB = depremultiply(effectiveBaseColor);
 
-    float topAlpha = topColor.a * opacity;
-    float baseAlpha = baseColor.a;
+    float topAlpha = effectiveTopColor.a * opacity;
+    float baseAlpha = effectiveBaseColor.a;
     
     // Calculate output alpha based on alpha blending mode
     float outputAlpha;
@@ -47,14 +65,28 @@ void main(void) {
         if (clippingMask) {
             outputAlpha = baseAlpha;
         }
+        
+        if (outputAlpha <= 0.0) {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+            return;
+        }
+        
+        // For alpha blending mode, preserve base color without blend artifacts
+        // Just apply the alpha subtraction without color blending
+        gl_FragColor = vec4(baseRGB * outputAlpha, outputAlpha);
+        return;
     } else {
-        // Standard alpha compositing, preserve base alpha behavior
+        // Standard alpha compositing with color blending
         outputAlpha = calculateOutputAlpha(baseAlpha, topAlpha);
-    }
-    
-    gl_FragColor.a = outputAlpha;
-    if (gl_FragColor.a <= 0.0) discard;
+        
+        if (outputAlpha <= 0.0) {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+            return;
+        }
 
-    vec3 blendedRGB = layerBlendingAlgorithm(baseRGB, topRGB);
-    gl_FragColor.rgb = compositeColors(baseRGB, topRGB, blendedRGB, baseAlpha, topAlpha);
+        vec3 blendedRGB = layerBlendingAlgorithm(baseRGB, topRGB);
+        vec3 finalRGB = compositeColors(baseRGB, topRGB, blendedRGB, baseAlpha, topAlpha);
+        
+        gl_FragColor = vec4(finalRGB * outputAlpha, outputAlpha);
+    }
 }
