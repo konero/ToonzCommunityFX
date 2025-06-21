@@ -1,0 +1,6 @@
+<fxlayout>
+  <page name="Layer Blending (Hard Mix) GPU">
+    <control>opacity</control>
+    <control>clippingMask</control>
+  </page>
+</fxlayout>

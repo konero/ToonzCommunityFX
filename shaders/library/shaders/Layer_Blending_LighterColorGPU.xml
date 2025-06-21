@@ -1,0 +1,51 @@
+<MainProgram>
+  <Name>
+    SHADER_Layer_Blending_LighterColorGPU
+  </Name>
+  <ProgramFile>
+    "programs/Layer_Blending_LighterColorGPU.frag"
+  </ProgramFile>
+</MainProgram>
+
+<InputPorts>
+  <InputPort>
+    "Fore"
+  </InputPort>
+  <InputPort>
+    "Back"
+  </InputPort>
+
+  <PortsProgram>
+    <Name>
+      SHADER_Layer_Blending_LighterColorGPU_ports
+    </Name>
+    <ProgramFile>
+      "programs/Layer_Blending_LighterColorGPU_ports.vert"
+    </ProgramFile>
+  </PortsProgram>
+</InputPorts>
+
+<HandledWorldTransforms>
+  isotropic
+</HandledWorldTransforms>
+
+<Parameters>
+  <Parameter>
+    float opacity
+    <Concept>
+      percent
+    </Concept>
+    <Default>
+      1.0
+    </Default>
+    <Range>
+      0 1
+    </Range>
+  </Parameter>
+  <Parameter>
+    bool clippingMask
+    <Default>
+      0
+    </Default>
+  </Parameter>
+</Parameters>
