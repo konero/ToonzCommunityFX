@@ -13,7 +13,8 @@ vec3 depremultiply(vec4 color) {
 }
 
 vec3 layerBlendingAlgorithm(vec3 base, vec3 top) {
-   return min(base, top); // Darken blending
+    // Cross dissolve blending
+    return base * (1.0 - opacity) + top * opacity;
 }
 
 float calculateOutputAlpha(float baseAlpha, float topAlpha) {
