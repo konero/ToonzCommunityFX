@@ -1,0 +1,6 @@
+<fxlayout>
+  <page name="Layer Blending (Cross Dissolve) GPU">
+    <control>opacity</control>
+    <control>clippingMask</control>
+  </page>
+</fxlayout>

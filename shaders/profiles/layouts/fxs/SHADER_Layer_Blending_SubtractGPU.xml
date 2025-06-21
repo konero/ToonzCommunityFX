@@ -1,0 +1,7 @@
+<fxlayout>
+  <page name="Layer Blending (Subtract) GPU">
+    <control>opacity</control>
+    <control>clippingMask</control>
+    <control>alphaBlending</control>
+  </page>
+</fxlayout>

@@ -1,0 +1,57 @@
+<MainProgram>
+  <Name>
+    SHADER_Layer_Blending_SubtractGPU
+  </Name>
+  <ProgramFile>
+    "programs/Layer_Blending_SubtractGPU.frag"
+  </ProgramFile>
+</MainProgram>
+
+<InputPorts>
+  <InputPort>
+    "Fore"
+  </InputPort>
+  <InputPort>
+    "Back"
+  </InputPort>
+
+  <PortsProgram>
+    <Name>
+      SHADER_Layer_Blending_SubtractGPU_ports
+    </Name>
+    <ProgramFile>
+      "programs/Layer_Blending_SubtractGPU_ports.vert"
+    </ProgramFile>
+  </PortsProgram>
+</InputPorts>
+
+<HandledWorldTransforms>
+  isotropic
+</HandledWorldTransforms>
+
+<Parameters>
+  <Parameter>
+    float opacity
+    <Concept>
+      percent
+    </Concept>
+    <Default>
+      1.0
+    </Default>
+    <Range>
+      0 1
+    </Range>
+  </Parameter>
+  <Parameter>
+    bool clippingMask
+    <Default>
+      0
+    </Default>
+  </Parameter>
+  <Parameter>
+    bool alphaBlending
+    <Default>
+      1
+    </Default>
+  </Parameter>
+</Parameters>
